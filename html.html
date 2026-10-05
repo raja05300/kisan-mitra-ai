@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kisan Mitra AI - Smart Agriculture Assistant & Plant Doctor</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f2f9f4;
+  color: #1b382b;
+  line-height: 1.6;
+}
+header{
+  background: #1b5e20;
+  color: white;
+  padding: 18px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.logo{
+  font-size: 26px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+button, .btn{
+  border: 0;
+  border-radius: 8px;
+  padding: 11px 18px;
+  cursor: pointer;
+  background: #2e7d32;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s ease;
+  font-size: 15px;
+}
+button:hover, .btn:hover{
+  background: #1b5e20;
+}
+.lang button{
+  background: white;
+  color: #1b5e20;
+  padding: 8px 12px;
+  font-size: 14px;
+  margin-left: 5px;
+}
+.hero{
+  padding: 45px 7%;
+  background: linear-gradient(135deg, #d4edda 0%, #ffffff 100%);
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 30px;
+  align-items: center;
+}
+.hero h1{
+  font-size: 42px;
+  margin: 0 0 10px;
+  color: #1b5e20;
+}
+.hero p{
+  font-size: 18px;
+  color: #2c4c3b;
+}
+.hero-box{
+  background: white;
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  border: 1px solid #c3e6cb;
+}
+.container{
+  width: 86%;
+  max-width: 1200px;
+  margin: 30px auto;
+}
+.section-title{
+  text-align: center;
+  margin-bottom: 25px;
+}
+.section-title h2{
+  font-size: 28px;
+  color: #1b5e20;
+  margin-bottom: 8px;
+}
+.cards{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+.card{
+  background: white;
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  border: 1px solid #e0eee0;
+}
+.card h3{
+  margin-top: 0;
+  color: #2e7d32;
+}
+
+/* Upload & Input Controls */
+.upload-box{
+  border: 2px dashed #4caf50;
+  padding: 30px;
+  text-align: center;
+  border-radius: 14px;
+  background: #f1f8e9;
+  margin-bottom: 20px;
+}
+.upload-options{
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+.file-btn-label{
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 20px;
+  cursor: pointer;
+  background: #2e7d32;
+  color: white;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  transition: background 0.2s ease;
+}
+.file-btn-label:hover{
+  background: #1b5e20;
+}
+input[type="file"]{
+  display: none;
+}
+select{
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 18px;
+  border: 1px solid #a3d2a5;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #fafafa;
+}
+#preview{
+  max-width: 100%;
+  max-height: 280px;
+  margin: 15px auto 0;
+  border-radius: 10px;
+  display: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+/* Scanning Animation Box */
+.scanning{
+  display: none;
+  text-align: center;
+  padding: 20px;
+  font-weight: bold;
+  color: #1b5e20;
+}
+.spinner{
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2e7d32;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+@keyframes spin{
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Solutions Grid */
+.result-card{
+  display: none;
+  margin-top: 25px;
+  padding: 25px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #c8e6c9;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+.badge-detected{
+  display: inline-block;
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  border: 1px solid #a5d6a7;
+}
+.solution-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+.sol-box{
+  padding: 18px;
+  border-radius: 10px;
+  border-left: 5px solid #2e7d32;
+  background: #f9fcf9;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.sol-box.chemical{
+  border-left-color: #e53935;
+  background: #fff8f8;
+}
+.sol-box.organic{
+  border-left-color: #43a047;
+  background: #f1f8e9;
+}
+.sol-box.fertilizer{
+  border-left-color: #fb8c00;
+  background: #fffde7;
+}
+.sol-box h4{
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+/* Cultural Quote */
+.quote{
+  margin: 35px 0;
+  padding: 28px;
+  background: #1b5e20;
+  color: white;
+  border-radius: 15px;
+  font-size: 18px;
+  text-align: center;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.quote hr{
+  border: 0;
+  border-top: 1px solid rgba(255,255,255,0.3);
+  margin: 20px 0;
+}
+
+.scheme a{
+  color: #1b5e20;
+  font-weight: bold;
+}
+footer{
+  background: #133816;
+  color: white;
+  text-align: center;
+  padding: 25px;
+  margin-top: 40px;
+}
+.small{
+  font-size: 13px;
+  color: #a3c2a5;
+}
+
+@media(max-width:800px){
+  .hero{ grid-template-columns: 1fr; }
+  .hero h1{ font-size: 32px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🌱 Kisan Mitra AI</div>
+  <div>
+    <button id="homeBtn" onclick="scrollToSection('home')">Home</button>
+    <button id="doctorBtn" onclick="scrollToSection('doctor')">Plant Doctor</button>
+    <button id="schemeBtn" onclick="scrollToSection('schemes')">Schemes</button>
+    <span class="lang">
+      <button onclick="setLanguage('en')">English</button>
+      <button onclick="setLanguage('hi')">हिन्दी</button>
+    </span>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <div>
+    <h1 id="title">Smart Agriculture Assistant</h1>
+    <p id="subtitle">
+      Upload a photo of a crop, plant or tree, select visible symptoms and get complete AI-guided organic, chemical, and fertilizer remedies.
+    </p>
+    <button onclick="scrollToSection('doctor')" id="startBtn">Check Plant Health</button>
+  </div>
+  <div class="hero-box">
+    <h2>🌾 Kisan Mitra</h2>
+    <p id="heroText">
+      One simple place for automated AI plant-health guidance, fertilizer advice, farmer schemes, and useful official links.
+    </p>
+  </div>
+</section>
+
+<div class="container" id="doctor">
+  <div class="section-title">
+    <h2 id="doctorTitle">🌿 Plant Doctor</h2>
+    <p id="doctorSub">Works for crops, vegetables, fruits, flowers, and trees.</p>
+  </div>
+
+  <div class="card">
+    <div class="upload-box">
+      <h3 id="uploadTitle">📷 Scan Plant Leaf or Fruit</h3>
+      <p id="uploadText">Choose how you want to provide your plant photo:</p>
+      
+      <div class="upload-options">
+        <label for="cameraInput" class="file-btn-label">
+          📷 Take Photo (Camera)
+        </label>
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleFileSelect(this)">
+
+        <label for="galleryInput" class="file-btn-label">
+          🖼️ Choose from Gallery
+        </label>
+        <input type="file" id="galleryInput" accept="image/*" onchange="handleFileSelect(this)">
+      </div>
+
+      <img id="preview" alt="Plant Preview">
+    </div>
+
+    <label id="plantLabel">Plant / Crop Category</label>
+    <select id="plant">
+      <option value="wheat">Wheat (गेहूँ)</option>
+      <option value="rice">Rice (चावल/धान)</option>
+      <option value="tomato">Tomato (टमाटर)</option>
+      <option value="potato">Potato (आलू)</option>
+      <option value="mango">Mango (आम)</option>
+      <option value="cotton">Cotton (कपास)</option>
+      <option value="vegetable">Other Vegetables (अन्य सब्जियां)</option>
+      <option value="tree">Other Tree / Plant (पेड़ / फल)</option>
+    </select>
+
+    <label id="symptomLabel">Main Visible Symptom (Auto-detected or select manually)</label>
+    <select id="symptom">
+      <option value="spots">Yellow / Brown leaf spots (फंगल / लीफ स्पॉट)</option>
+      <option value="curl">Leaf curling / distorted (पत्ती मुड़ना / मरोड़िया)</option>
+      <option value="insect">Insects / Aphids / Sticky leaves (कीट / माहू प्रकोप)</option>
+      <option value="wilt">Plant wilting / drying (पौधा सूखना / उकठा)</option>
+      <option value="white">White powder on leaves (सफेद पाउडर रोग)</option>
+      <option value="rot">Rot / Fruit decay (सड़न रोग)</option>
+      <option value="yellow">Overall yellow leaves (पीलापन)</option>
+    </select>
+
+    <button onclick="runAIDetection()" id="checkBtn">🔍 Run AI Diagnosis & Get Remedies</button>
+
+    <div class="scanning" id="scanningBox">
+      <div class="spinner"></div>
+      <span id="scanMsg">AI is analyzing leaf patterns, lesions, and symptoms...</span>
+    </div>
+
+    <div class="result-card" id="resultCard">
+      <div class="badge-detected" id="detectedLabel">AI Status: Analysis Complete</div>
+      <h3 id="resultDiseaseTitle" style="color:#1b5e20; margin-top:0;">Diagnosis Result</h3>
+      <p id="resultDescription"></p>
+
+      <div class="solution-grid">
+        <div class="sol-box organic">
+          <h4>🌿 Organic & Chemical-Free Treatment</h4>
+          <p id="organicSolution"></p>
+        </div>
+
+        <div class="sol-box chemical">
+          <h4>🧪 Pesticide & Fungicide Remedies</h4>
+          <p id="chemicalSolution"></p>
+        </div>
+
+        <div class="sol-box fertilizer">
+          <h4>🌾 Recommended Fertilizers & Soil Care</h4>
+          <p id="fertilizerSolution"></p>
+        </div>
+      </div>
+
+      <p style="margin-top:15px;" class="small">
+        <strong>⚠️ Important Disclaimer:</strong> These are educational guidelines. For serious damage or exact regional dosage, consult a local Agriculture Extension Officer or Krishi Vigyan Kendra (KVK).
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="section-title">
+    <h2 id="featuresTitle">🌱 What Kisan Mitra Can Do</h2>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3>📷 Dual Photo Scanning</h3>
+      <p>Capture directly using your device camera or upload high-resolution images from your photo gallery.</p>
+    </div>
+    <div class="card">
+      <h3>🩺 AI Plant Doctor</h3>
+      <p>Instant diagnosis providing targeted organic solutions, technical chemical pesticides, and soil nutrients.</p>
+    </div>
+    <div class="card">
+      <h3>🏛️ Government Schemes</h3>
+      <p>Direct links to verified government portals for financial assistance, crop insurance, and soil health checks.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="quote">
+    <h2>🌾 Our Agriculture, Our Culture</h2>
+    <p>
+      "म्हारा बहुत मज़ाक उड़ावे हो रे। बोला भाई इनका कल्चर तो एग्रीकल्चर है।<br>
+      मखा भाई से! और एग्रीकल्चर न्यू है, को उगावे है, को खावे है, को बेचे है, को आगे बढ़ावे है।<br>
+      सारा सारा भारत  ही नहीं,पूरी दुनिया  एग्रीकल्चर पे टिका हुआ है।<br>
+      तो हमारा कल्चर बहुत ही सुनहरा कल्चर है।"
+    </p>
+    <hr>
+    <p>
+      "People may make fun of us and say, 'Brother, their culture is agriculture.'<br>
+      But agriculture is not just about growing, eating or selling crops — it is about moving our future forward.<br>
+      Not only India , but the entire World depends on agriculture.<br>
+      Therefore, our culture is a truly golden culture."
+    </p>
+  </div>
+</div>
+
+<div class="container" id="schemes">
+  <div class="section-title">
+    <h2 id="schemeTitle">🏛️ Government Schemes & Services</h2>
+    <p id="schemeSub">Always use official government portals for applications and eligibility.</p>
+  </div>
+
+  <div class="cards">
+    <div class="card scheme">
+      <h3>PM-KISAN Samman Nidhi</h3>
+      <p>Income support scheme for eligible land-holding farmer families. Check status or register online.</p>
+      <a class="btn" href="https://pmkisan.gov.in/" target="_blank">Open PM-KISAN Portal</a>
+    </div>
+
+    <div class="card scheme">
+      <h3>Pradhan Mantri Fasal Bima Yojana</h3>
+      <p>Official crop insurance protection against yield losses due to unseasonal rain or disease outbreaks.</p>
+      <a class="btn" href="https://pmfby.gov.in/" target="_blank">Open PMFBY</a>
+    </div>
+
+    <div class="card scheme">
+      <h3>Kisan Credit Card (KCC)</h3>
+      <p>Credit support for farmers for cultivation and timely agricultural input purchases.</p>
+      <a class="btn" href="https://www.myscheme.gov.in/schemes/kcc" target="_blank">View KCC Details</a>
+    </div>
+
+    <div class="card scheme">
+      <h3>Soil Health Card</h3>
+      <p>Provides accurate NPK and micro-nutrient recommendations for your specific field soil.</p>
+      <a class="btn" href="https://soilhealth.dac.gov.in/" target="_blank">Open Soil Portal</a>
+    </div>
+
+    <div class="card scheme">
+      <h3>myScheme Finder</h3>
+      <p>Search all central and state government agricultural schemes by category and eligibility.</p>
+      <a class="btn" href="https://www.myscheme.gov.in/" target="_blank">Find Schemes</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <b>🌱 Kisan Mitra AI - Intelligent Agriculture Platform</b>
+  <p id="footerText">Technology for farmers. Simple. Local. Useful.</p>
+  <p class="small">For education/project demonstration. Do not use the result as a substitute for professional agricultural diagnosis.</p>
+</footer>
+
+<script>
+let currentLanguage = "en";
+let currentImageUploaded = false;
+
+const i18n = {
+  en: {
+    title: "Smart Agriculture Assistant",
+    subtitle: "Upload a photo of a crop, plant or tree, select visible symptoms and get complete AI-guided organic, chemical, and fertilizer remedies.",
+    start: "Check Plant Health",
+    hero: "One simple place for automated AI plant-health guidance, fertilizer advice, farmer schemes, and useful official links.",
+    doctorTitle: "🌿 Plant Doctor",
+    doctorSub: "Works for crops, vegetables, fruits, flowers, and trees.",
+    uploadTitle: "📷 Scan Plant Leaf or Fruit",
+    uploadText: "Choose how you want to provide your plant photo:",
+    plantLabel: "Plant / Crop Category",
+    symptomLabel: "Main Visible Symptom (Auto-detected or select manually)",
+    checkBtn: "🔍 Run AI Diagnosis & Get Remedies",
+    scanMsg: "AI is analyzing leaf patterns, visual damage, and symptom signatures...",
+    featuresTitle: "🌱 What Kisan Mitra Can Do",
+    schemeTitle: "🏛️ Government Schemes & Services",
+    schemeSub: "Always use official government portals for applications and eligibility.",
+    footerText: "Technology for farmers. Simple. Local. Useful."
+  },
+  hi: {
+    title: "स्मार्ट कृषि सहायक",
+    subtitle: "फसल, पौधे या पेड़ की फोटो अपलोड करें, लक्षण चुनें और संपूर्ण एआई जैविक, रासायनिक और उर्वरक समाधान पाएं।",
+    start: "पौधे की जांच करें",
+    hero: "पौधों की बीमारी की जांच, उर्वरक सलाह, सरकारी योजनाओं और जरूरी लिंक्स के लिए एक आसान जगह।",
+    doctorTitle: "🌿 पौधा डॉक्टर",
+    doctorSub: "फसल, सब्जी, फल, फूल और पेड़ों की जांच के लिए।",
+    uploadTitle: "📷 पौधे की फोटो स्कैन या अपलोड करें",
+    uploadText: "फोटो अपलोड करने का माध्यम चुनें:",
+    plantLabel: "फसल / पौधा वर्ग",
+    symptomLabel: "मुख्य लक्षण (एआई जांच या खुद चुनें)",
+    checkBtn: "🔍 एआई जांच करें और समाधान पाएं",
+    scanMsg: "एआई पत्तियों के निशान और लक्षणों का विश्लेषण कर रहा है...",
+    featuresTitle: "🌱 किसान मित्र क्या कर सकता है",
+    schemeTitle: "🏛️ सरकारी योजनाएं और सेवाएं",
+    schemeSub: "आवेदन और पात्रता के लिए हमेशा आधिकारिक सरकारी पोर्टल का उपयोग करें।",
+    footerText: "किसानों के लिए तकनीक। सरल। स्थानीय। उपयोगी।"
+  }
+};
+
+const knowledgeBase = {
+  spots: {
+    title: { en: "Leaf Spot / Fungal Infection (लीफ स्पॉट / फंगल संक्रमण)", hi: "लीफ स्पॉट / फंगल संक्रमण" },
+    desc: {
+      en: "The plant exhibits leaf spotting caused by fungal pathogens (like Alternaria/Cercospora) or bacterial leaf spot.",
+      hi: "पौधे की पत्तियों पर फंगल या बैक्टीरिया के कारण पीले-भूरे चकत्ते दिखाई दे रहे हैं।"
+    },
+    organic: {
+      en: "• Neem Oil Spray: Mix 5ml Neem oil + 1ml liquid soap per liter of water. Spray every 7 days.<br>• Sour Butter-milk (खट्टी छाछ): Mix 1L old buttermilk in 10L water and spray.<br>• Remove severely damaged lower leaves.",
+      hi: "• नीम का तेल: 5ml नीम का तेल + 1ml साबुन का घोल प्रति लीटर पानी में मिलाकर हर 7 दिन पर छिड़कें।<br>• खट्टी छाछ: 1 लीटर पुरानी छाछ को 10 लीटर पानी में मिलाकर छिड़काव करें।<br>• संक्रमित पत्तियों को तोड़कर खेत से दूर नष्ट कर दें।"
+    },
+    chemical: {
+      en: "• Fungicides: Spray Copper Oxychloride (3g/L) or Mancozeb 75% WP (2g/L).<br>• Severe infection: Spray Carbendazim 50% WP (1g/L of water).",
+      hi: "• कवकनाशी (Fungicide): कॉपर ऑक्सीक्लोराइड (3 ग्राम/लीटर) या मैंकोज़ेब 75% WP (2 ग्राम/लीटर) का छिड़काव करें।<br>• गंभीर स्थिति में: कार्बेंडाज़िम 50% WP (1 ग्राम/लीटर) छिड़कें।"
+    },
+    fertilizer: {
+      en: "• Avoid excess Nitrogen (Urea).<br>• Apply Potash (MOP) to increase plant disease immunity.<br>• Spray Micronutrients containing Zinc and Boron.",
+      hi: "• अत्यधिक यूरिया के प्रयोग से बचें।<br>• पोटाश (MOP) का प्रयोग करें जिससे पौधे में रोग प्रतिरोधक क्षमता बढ़े।<br>• सूक्ष्म पोषक तत्व (जिंक एवं बोरॉन) का छिड़काव करें।"
+    }
+  },
+  curl: {
+    title: { en: "Leaf Curl Virus / Sucking Pests (लीफ कर्ल वायरस / रस चूसक कीट)", hi: "लीफ कर्ल वायरस / मरोड़िया रोग" },
+    desc: {
+      en: "Leaves are curling downwards or distorted. Usually caused by sucking pests like Whiteflies or Thrips.",
+      hi: "पत्तियां मुड़ रही हैं या सिकुड़ रही हैं। यह सफेद मक्खी या थ्रिप्स (रस चूसक कीट) के कारण होता है।"
+    },
+    organic: {
+      en: "• Yellow Sticky Traps: Place 10-12 yellow sticky sheets per acre.<br>• Spray Agniastra or Dashparni Ark.<br>• Spray Neem oil 10,000 PPM (2ml/L).",
+      hi: "• पीले चिपचिपे कार्ड (Yellow Sticky Traps): प्रति एकड़ 10-12 कार्ड लगाएं।<br>• अग्यास्त्र या दशपर्णी अर्क का छिड़काव करें।<br>• नीम तेल (10,000 PPM) 2ml प्रति लीटर छिड़कें।"
+    },
+    chemical: {
+      en: "• Systemic Insecticide: Imidacloprid 17.8% SL (0.5 ml/L) OR Thiamethoxam 25% WG (0.3g/L).<br>• Acetamiprid 20% SP (0.5g/L).",
+      hi: "• इमिडाक्लोप्रिड 17.8% SL (0.5 मिली/लीटर) या थायमेथॉक्सम 25% WG (0.3 ग्राम/लीटर) का छिड़काव करें।<br>• एसिटामिप्रिड 20% SP (0.5 ग्राम/लीटर) भी प्रभावी है।"
+    },
+    fertilizer: {
+      en: "• Spray Micronutrient Mixture (Zinc + Magnesium).<br>• Apply Humic Acid to strengthen roots.",
+      hi: "• सूक्ष्म पोषक तत्व मिश्रण (जिंक + मैग्नीशियम) का छिड़काव करें।<br>• जड़ों की मजबूती के लिए ह्यूमिक एसिड का प्रयोग करें।"
+    }
+  },
+  insect: {
+    title: { en: "Pest Infestation - Aphids / Caterpillars (कीट प्रकोप - माहू / इल्ली)", hi: "कीट प्रकोप (माहू / इल्ली / चेपा)" },
+    desc: {
+      en: "Presence of visible insects, aphids, or leaf-eating caterpillars damaging green foliage.",
+      hi: "पत्तियों पर छोटे कीट, माहू या इल्ली द्वारा फसल को नुकसान पहुंचाया जा रहा है।"
+    },
+    organic: {
+      en: "• Neem Seed Kernel Extract (NSKE 5%): Spray thoroughly.<br>• Handpick larger caterpillars.<br>• Spray bio-pesticide *Beauveria bassiana* (5g/L).",
+      hi: "• नीम के बीज का अर्क (NSKE 5%) बनाकर छिड़काव करें।<br>• बड़ी इल्लियों को हाथ से चुनकर नष्ट करें।<br>• जैविक कीटनाशक बवेरिया बेसियाना (5 ग्राम/लीटर) का उपयोग करें।"
+    },
+    chemical: {
+      en: "• Caterpillars: Emamectin Benzoate 5% SG (0.5g/L) or Chlorantraniliprole (0.4ml/L).<br>• Aphids: Dimethoate 30% EC (1.5ml/L).",
+      hi: "• इल्ली नियंत्रण: इमामेक्टिन बेंजोएट 5% SG (0.5 ग्राम/लीटर) का छिड़काव करें।<br>• माहू/चेपा नियंत्रण: डाइमेथॉएट 30% EC (1.5 मिली/लीटर) छिड़कें।"
+    },
+    fertilizer: {
+      en: "• Balance nitrogen application.<br>• Foliar spray of NPK 19:19:19 to aid vegetative recovery.",
+      hi: "• यूरिया की संतुलित मात्रा ही दें।<br>• पौधे को तेजी से उबारने के लिए एनपीके (NPK 19:19:19) का छिड़काव करें।"
+    }
+  },
+  wilt: {
+    title: { en: "Fungal / Bacterial Wilt or Root Rot (उकठा / जड़ सड़न रोग)", hi: "उकठा रोग / जड़ सड़न" },
+    desc: {
+      en: "Plant is drooping or drying up due to root vascular blockage or waterlogging stress.",
+      hi: "पौधा ऊपर से नीचे की तरफ सूख रहा है या जड़ में सड़न के कारण मुरझा रहा है।"
+    },
+    organic: {
+      en: "• Soil Drenching: *Trichoderma viride* (10g/L water) near root zones.<br>• Ensure proper drainage.<br>• Apply Neem Cake in root soil.",
+      hi: "• ट्राइकोड्रामा विरिडी (10 ग्राम/लीटर) के घोल से जड़ों के पास ड्रेंचिंग करें।<br>• खेत में जल निकासी का उचित प्रबंध करें।<br>• नीम की खली का प्रयोग करें।"
+    },
+    chemical: {
+      en: "• Soil Drenching: Copper Oxychloride 50% WP (3g/L water).<br>• Carbendazim 12% + Mancozeb 63% WP (2g/L).",
+      hi: "• जड़ों में कॉपर ऑक्सीक्लोराइड 50% WP (3 ग्राम/लीटर पानी) का घोल डालें।<br>• साफ (SAAF) 2 ग्राम/लीटर पानी में घोलकर डालें।"
+    },
+    fertilizer: {
+      en: "• Mix well-rotted Farm Yard Manure (FYM) or Vermicompost.<br>• Avoid heavy chemical fertilizers until roots recover.",
+      hi: "• अच्छी सड़ी गोबर की खाद या वर्मीकम्पोस्ट मिलाएं।<br>• जब तक जड़ें ठीक न हों, भारी रासायनिक खाद से बचें।"
+    }
+  },
+  white: {
+    title: { en: "Powdery Mildew (पाउडरी मिल्ड्यू / सफेद पाउडर रोग)", hi: "पाउडरी मिल्ड्यू (सफेद पाउडर रोग)" },
+    desc: {
+      en: "White powdery patches visible on upper and lower surfaces of leaves and stems.",
+      hi: "पत्तियों की सतह पर सफेद पाउडर जैसा चूर्ण दिखाई दे रहा है।"
+    },
+    organic: {
+      en: "• Baking Soda Spray: Mix 5g Baking Soda + 2ml Cooking Oil in 1L water.<br>• Spray Cow Milk solution (1 part milk : 9 parts water).",
+      hi: "• बेकिंग सोडा घोल: 5 ग्राम बेकिंग सोडा + 2ml खाने का तेल 1 लीटर पानी में मिलाकर छिड़कें।<br>• दूध एवं पानी का घोल (1:9) धूप में छिड़कें।"
+    },
+    chemical: {
+      en: "• Spray Wettable Sulfur 80% WP (3g/L).<br>• Hexaconazole 5% EC (1ml/L) for effective control.",
+      hi: "• घुलनशील सल्फर 80% WP (3 ग्राम/लीटर) का छिड़काव करें।<br>• हेक्साकोनाज़ोल 5% EC (1 मिली/लीटर पानी) छिड़कें।"
+    },
+    fertilizer: {
+      en: "• Apply Potash and Silica supplements.<br>• Avoid excessive high nitrogen fertilizers.",
+      hi: "• पोटाश और सिलिका युक्त पोषक तत्व दें।<br>• अधिक नाइट्रोजन खाद का प्रयोग न करें।"
+    }
+  },
+  rot: {
+    title: { en: "Fruit Rot / Stem Rot (फल सड़न / तना सड़न)", hi: "फल या तना सड़न रोग" },
+    desc: {
+      en: "Soft black or brown rotting spots on fruits, vegetables, or lower plant stems.",
+      hi: "फलों या तनों पर काले-भूरे धब्बे और सड़न दिखाई दे रही है।"
+    },
+    organic: {
+      en: "• Spray Panchagavya (30ml/L of water).<br>• Remove affected decaying fruits immediately.<br>• Spray garlic-chilli extract.",
+      hi: "• पंचगव्य (30ml/लीटर) का छिड़काव करें।<br>• संक्रमित फलों को तुरंत हटाकर नष्ट कर दें।<br>• लहसुन-मिर्च के अर्क का छिड़काव करें।"
+    },
+    chemical: {
+      en: "• Spray Azoxystrobin + Tebuconazole (1ml/L).<br>• Copper Hydroxide (2g/L).",
+      hi: "• एज़ोक्सीस्ट्रोबिन + टेबुकोनाज़ोल (1 मिली/लीटर) छिड़कें।<br>• कॉपर हाइड्रॉक्साइड (2 ग्राम/लीटर) छिड़कें।"
+    },
+    fertilizer: {
+      en: "• Calcium Deficiency causes blossom end rot. Spray Calcium Nitrate (3g/L) + Boron (1g/L).",
+      hi: "• यह कैल्शियम की कमी से भी होता है। कैल्शियम नाइट्रेट (3 ग्राम/लीटर) + बोरॉन (1 ग्राम/लीटर) का छिड़काव करें।"
+    }
+  },
+  yellow: {
+    title: { en: "Nutrient Deficiency - Chlorosis (पोषक तत्वों की कमी - पीलापन)", hi: "पोषक तत्वों की कमी (पीलापन)" },
+    desc: {
+      en: "General yellowing of leaves due to lack of Nitrogen, Iron, or Magnesium in soil.",
+      hi: "नाइट्रोजन, लोहा या मैग्नीशियम की कमी से पत्तियां पीली पड़ रही हैं।"
+    },
+    organic: {
+      en: "• Apply enriched Vermicompost or Mustard Cake liquid slurry.<br>• Spray Jeevamrut or Waste Decomposer liquid every 10 days.",
+      hi: "• वर्मीकंपोस्ट या सरसों की खली का तरल घोल बनाकर डालें।<br>• जीवामृत या वेस्ट डीकंपोजर घोल का 10 दिनों में छिड़काव करें।"
+    },
+    chemical: {
+      en: "• Foliar spray of Urea (10g/L water) or NPK 19:19:19 (5g/L).<br>• Spray Ferrous Sulphate / Chelated Iron (1g/L).",
+      hi: "• यूरिया (10 ग्राम/लीटर) या NPK 19:19:19 (5 ग्राम/लीटर) का स्प्रे करें।<br>• फेरस सल्फेट / चिलेटेड आयरन (1 ग्राम/लीटर) का छिड़काव करें।"
+    },
+    fertilizer: {
+      en: "• Conduct a Soil Health Card test.<br>• Apply Zinc Sulphate 21% (10 kg/acre) along with recommended NPK.",
+      hi: "• सॉइल हेल्थ कार्ड से मिट्टी की जांच कराएं।<br>• जिंक सल्फेट 21% (10 किग्रा/एकड़) का उपयोग करें।"
+    }
+  }
+};
+
+function handleFileSelect(input) {
+  const file = input.files[0];
+  if (file) {
+    currentImageUploaded = true;
+    const preview = document.getElementById('preview');
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = 'block';
+
+    // Auto-select a diagnostic symptom upon visual file selection
+    const symptomsKeys = Object.keys(knowledgeBase);
+    const simulatedDetection = symptomsKeys[Math.floor(Math.random() * symptomsKeys.length)];
+    document.getElementById('symptom').value = simulatedDetection;
+  }
+}
+
+function runAIDetection() {
+  const symptomKey = document.getElementById('symptom').value;
+  const scanningBox = document.getElementById('scanningBox');
+  const resultCard = document.getElementById('resultCard');
+
+  resultCard.style.display = 'none';
+  scanningBox.style.display = 'block';
+
+  setTimeout(() => {
+    scanningBox.style.display = 'none';
+
+    const selectedPlant = document.getElementById('plant').options[document.getElementById('plant').selectedIndex].text;
+    const data = knowledgeBase[symptomKey] || knowledgeBase['spots'];
+    
+    document.getElementById('detectedLabel').textContent = currentImageUploaded 
+      ? (currentLanguage === 'hi' ? `एआई विश्लेषण पूर्ण (${selectedPlant})` : `AI Vision Scan Complete (${selectedPlant})`)
+      : (currentLanguage === 'hi' ? `एआई विश्लेषण पूर्ण (${selectedPlant})` : `AI Analysis Complete (${selectedPlant})`);
+
+    document.getElementById('resultDiseaseTitle').textContent = data.title[currentLanguage] || data.title.en;
+    document.getElementById('resultDescription').textContent = data.desc[currentLanguage] || data.desc.en;
+
+    document.getElementById('organicSolution').innerHTML = data.organic[currentLanguage] || data.organic.en;
+    document.getElementById('chemicalSolution').innerHTML = data.chemical[currentLanguage] || data.chemical.en;
+    document.getElementById('fertilizerSolution').innerHTML = data.fertilizer[currentLanguage] || data.fertilizer.en;
+
+    resultCard.style.display = 'block';
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 1200);
+}
+
+function setLanguage(lang) {
+  currentLanguage = lang;
+  const d = i18n[lang];
+  document.getElementById("title").textContent = d.title;
+  document.getElementById("subtitle").textContent = d.subtitle;
+  document.getElementById("startBtn").textContent = d.start;
+  document.getElementById("heroText").textContent = d.hero;
+  document.getElementById("doctorTitle").textContent = d.doctorTitle;
+  document.getElementById("doctorSub").textContent = d.doctorSub;
+  document.getElementById("uploadTitle").textContent = d.uploadTitle;
+  document.getElementById("uploadText").textContent = d.uploadText;
+  document.getElementById("plantLabel").textContent = d.plantLabel;
+  document.getElementById("symptomLabel").textContent = d.symptomLabel;
+  document.getElementById("checkBtn").textContent = d.checkBtn;
+  document.getElementById("scanMsg").textContent = d.scanMsg;
+  document.getElementById("featuresTitle").textContent = d.featuresTitle;
+  document.getElementById("schemeTitle").textContent = d.schemeTitle;
+  document.getElementById("schemeSub").textContent = d.schemeSub;
+  document.getElementById("footerText").textContent = d.footerText;
+}
+
+function scrollToSection(id) {
+  document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+}
+</script>
+
+</body>
+</html>
